@@ -45,4 +45,4 @@ Project inspired by many customer requests for a simple way to monitor switch in
 Thanks README.md template from https://github.com/ritaly/README-cheatsheet
 
 ## Contact
-Created by [@stantiku](https://github.com/stantiku) - feel free to contact me!
+Created by [@disruptednetwork(https://github.com/disruptednetwork) - feel free to contact me!
