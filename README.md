@@ -17,9 +17,14 @@ The purpose of this project is to generate a REST call to Cisco APIC and show in
 ![Example screenshot](./img/aci_monitor_screenshot.png)
 
 ## Setup
+* This project was tested on python 3.7.6.
 * Clone the project
+* Create virtual environment: `python -m venv env`
+* Activate the virtual environment: `source env/bin/activate`
+* Add library requirement: `pip install -r requirements.txt`
 * Change the APIC's IP and credentials in settings.json
 * Modify the intf_list.json and add the interfaces to monitor
+* Run program: `pyhon main.py`
 
 ## Code Examples
 Show examples of usage:
