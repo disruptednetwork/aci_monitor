@@ -25,6 +25,7 @@ def show_port_stats(session, apic_ip, port_list):
     print_header()
     print_break()
     for port in port_list:
+        call_error = False
         pod = port['pod']
         node = port['node']
         interface = port['interface']
@@ -36,13 +37,14 @@ def show_port_stats(session, apic_ip, port_list):
                         + '/sys/phys-[eth' + interface 
                         + ']/HDeqptIngrTotal5min-0.json'
                         , verify=False)
-        # if apic return any errors, break
-        if (response_body.status_code != 200):
+        # if apic returns 200 OK, process the response
+        if response_body.status_code == 200:
+            # Load ingress values
+            ingr_total = json.loads(response_body.text)["imdata"]
+        else:
+            call_error = True        
             print ("REST call error")
-            break
         
-        # Load ingress values
-        ingr_total = json.loads(response_body.text)["imdata"]
         # GET HDeqptEgrTotal5min-0.json (Egress)
         # This can be supplied as a function parameter in later version
         response_body = session.get(apic_ip 
@@ -51,14 +53,15 @@ def show_port_stats(session, apic_ip, port_list):
                         + '/sys/phys-[eth' + interface 
                         + ']/HDeqptEgrTotal5min-0.json'
                         , verify=False)
-        # if apic return any errors, break
-        if (response_body.status_code != 200):
+        # if apic returns 200 OK, process the response
+        if response_body.status_code == 200:
+            # Load egress values
+            egr_total = json.loads(response_body.text)["imdata"]
+        else:
+            call_error = True
             print ("REST call error")
-            break
-        # Load egress values
-        egr_total = json.loads(response_body.text)["imdata"]
-        # If there's a query result, print in proper format.  
-        if (json.loads(response_body.text)["totalCount"]=="1"):
+       # If there's a query result, print in proper format.  
+        if json.loads(response_body.text)["totalCount"]=="1" and not call_error:
             ingr_output = ingr_total[0]['eqptIngrTotalHist5min']["attributes"]["bytesRate"]
             ingr_output = utils.human_format(float(ingr_output))
             ingr_pkts_rate = utils.human_format(float(ingr_total[0]['eqptIngrTotalHist5min']["attributes"]["pktsRate"]))
